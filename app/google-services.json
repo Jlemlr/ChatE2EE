@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "583344126510",
+    "project_id": "chatv2-4dee6",
+    "storage_bucket": "chatv2-4dee6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583344126510:android:f27335369796895de5bdbf",
+        "android_client_info": {
+          "package_name": "com.example.chatv2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGZoTA00ZaTOv6QRhYJurNd2D3MPDDquQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
