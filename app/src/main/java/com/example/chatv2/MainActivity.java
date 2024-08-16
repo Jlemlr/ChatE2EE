@@ -7,13 +7,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.chatv2.Fragments.ChatFragment;
+import com.example.chatv2.Fragments.UsersFragment;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 import Model.User;
 
@@ -71,22 +81,59 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Set up TabLayout and ViewPager2
         TabLayout tabLayout = findViewById(R.id.tabLayout);
-        ViewPager viewPager = findViewById(R.id.viewPager);
+        ViewPager2 viewPager = findViewById(R.id.viewPager);
+
+        // Set up the ViewPagerAdapter with fragments
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
+        viewPager.setAdapter(viewPagerAdapter);
+
+        // Add the fragments to the adapter
+        viewPagerAdapter.addFragment(new ChatFragment(), "Chats");
+        viewPagerAdapter.addFragment(new UsersFragment(), "Users");
+
+        // Bind TabLayout with ViewPager2
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            tab.setText(viewPagerAdapter.getTitle(position));
+        }).attach();
+
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter{
+    // ViewPagerAdapter class for managing fragments
+    static class ViewPagerAdapter extends FragmentStateAdapter {
 
+        private final ArrayList<Fragment> fragments = new ArrayList<>();
+        private final ArrayList<String> titles = new ArrayList<>();
+
+        // Constructor
+        public ViewPagerAdapter(@NonNull FragmentActivity fa) {
+            super(fa);
+        }
+
+        // Create the fragment based on the position
         @NonNull
         @Override
-        public Fragment getItem(int position) {
-            return null;
+        public Fragment createFragment(int position) {
+            return fragments.get(position);
         }
 
+        // Get the total number of fragments
         @Override
-        public int getCount() {
-            return 0;
+        public int getItemCount() {
+            return fragments.size();
+        }
+
+        // Add a fragment and its title to the adapter
+        public void addFragment(Fragment fragment, String title) {
+            fragments.add(fragment);
+            titles.add(title);
+        }
+
+        // Get the title of the tab
+        public String getTitle(int position) {
+            return titles.get(position);
         }
     }
-
 }
