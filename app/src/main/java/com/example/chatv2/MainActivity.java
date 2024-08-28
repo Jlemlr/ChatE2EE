@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,21 +58,27 @@ public class MainActivity extends AppCompatActivity {
         username = findViewById(R.id.usernameText);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        reference = FirebaseDatabase.getInstance("https://chatv2-4dee6-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(firebaseUser.getUid());
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                username.setText(user.getUsername());
 
+                if (user != null && user.getUsername() != null) {
+                    username.setText(user.getUsername());
+                } else {
+                    username.setText("Unknown User");
+                    Toast.makeText(MainActivity.this, "Username is not set or couldn't be loaded.", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(MainActivity.this, "Failed to load user data", Toast.LENGTH_LONG).show();
             }
         });
+
 
         logoutbt = findViewById(R.id.logoutButton);
         logoutbt.setOnClickListener(new View.OnClickListener() {
